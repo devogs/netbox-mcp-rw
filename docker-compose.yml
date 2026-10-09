@@ -1,0 +1,7 @@
+services:
+  netbox-mcp:
+    build: .
+    image: netbox-mcp-rw:latest
+    env_file: .env
+    ports:
+      - "8080:8000"
