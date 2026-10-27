@@ -188,3 +188,11 @@ Built on top of the excellent [FastMCP](https://github.com/pydantic/FastMCP) fra
 ---
 
 **Warning**: This server has write capabilities. Always test in a development environment first and ensure your API token has appropriate permissions. Use bulk operations carefully as they can modify many objects at once.
+## Behind the Traefik stack (backend network)
+
+`docker-compose.override.yml` (merged automatically, `docker-compose.yml` is not modified):
+
+* joins the shared `backend` network (create it once: `docker network create backend`) and reaches the NetBox API at
+  `http://netbox:8080/` (`NETBOX_URL` is overridden there; the token still comes from `.env`)
+* publishes the MCP port on `127.0.0.1` and the WireGuard address only (`WG_BIND_IP`, default `10.255.255.1`), so MCP clients
+  keep connecting by IP/port and the server is never exposed on all interfaces

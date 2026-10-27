@@ -1,0 +1,18 @@
+# Backend network: the MCP server reaches the NetBox API over the shared `backend` network (http://netbox:8080)
+# instead of the host address. The main docker-compose.yml is not modified: this file is merged automatically.
+services:
+  netbox-mcp:
+    # Explicit bind addresses (MCP clients connect by IP/port): loopback and the WireGuard address only
+    ports: !override
+      - "127.0.0.1:8080:8000"
+      - "${WG_BIND_IP:-10.255.255.1}:8080:8000"
+    environment:
+      # Overrides NETBOX_URL of .env: the NetBox API is reached over the backend network, not the host address
+      NETBOX_URL: "http://netbox:8080/"
+    networks:
+      - default
+      - backend
+
+networks:
+  backend:
+    external: true
